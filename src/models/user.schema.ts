@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 export type UserDocument = User & Document;
-import { genre } from '../constants/constants';
+import { genre, MOVIE, TVSHOW } from '../constants/constants';
 @Schema()
 export class User {
   @Prop({ required: true, unique: true })
@@ -43,7 +43,7 @@ export class User {
   @Prop([
     {
       contentId: { type: String, required: true },
-      contentType: { type: String, enum: ['Movie', 'TVShow'], required: true },
+      contentType: { type: String, enum: [MOVIE, TVSHOW], required: true },
     },
   ])
   myList: {

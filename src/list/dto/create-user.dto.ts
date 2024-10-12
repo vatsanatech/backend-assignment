@@ -10,7 +10,7 @@ import {
   IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { genre } from '../../constants/constants';
+import { genre, MOVIE, TVSHOW } from '../../constants/constants';
 
 export class WatchHistoryItem {
   @ApiProperty({ description: 'The ID of the watched content' })
@@ -44,11 +44,11 @@ export class MyListItem {
 
   @ApiProperty({
     description: 'The type of content',
-    enum: ['Movie', 'TVShow'],
+    enum: [MOVIE, TVSHOW],
   })
   @IsNotEmpty()
   @IsString()
-  @IsEnum(['Movie', 'TVShow'])
+  @IsEnum([MOVIE, TVSHOW])
   contentType: string;
 }
 
