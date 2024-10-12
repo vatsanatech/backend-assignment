@@ -4,7 +4,7 @@ export type UserDocument = User & Document;
 import { genre } from '../constants/constants';
 @Schema()
 export class User {
-  @Prop({ required: true, unique: true  })
+  @Prop({ required: true, unique: true })
   username: string;
 
   @Prop({
@@ -51,5 +51,6 @@ export class User {
     contentType: string;
   }[];
 }
-
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.index({ username: 1 });

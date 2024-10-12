@@ -9,7 +9,7 @@ import { UserModule } from './list/list.module';
     MongooseModule.forRoot('mongodb://mongodb:27017/stagedb'),
     MoviesModule,
     TvshowsModule,
-    UserModule
+    UserModule,
   ],
 })
 export class AppModule {}
