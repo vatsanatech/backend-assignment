@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TVShow, TVShowSchema } from '../models/tvshow.schema';
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: TVShow.name, schema: TVShowSchema }]), // Register Movie model with Mongoose
+    MongooseModule.forFeature([{ name: TVShow.name, schema: TVShowSchema }]), // Register TV show model with Mongoose
   ],
   controllers: [TVShowsController],
   providers: [TVShowsService],
