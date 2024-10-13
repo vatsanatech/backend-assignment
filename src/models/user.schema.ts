@@ -1,12 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 export type UserDocument = User & Document;
 import { genre } from '../constants/constants';
+
+// Content Type for listings
+export const CONTENT_TYPE_ENUM = ['Movie', 'TVShow'] as const;
+export type ContentType = (typeof CONTENT_TYPE_ENUM)[number];
 
 @Schema()
 export class User {
   @Prop({ required: true })
   username: string;
+
+  @Prop({ required: true })
+  email: string;
+
+  @Prop({ required: true })
+  password: string;
 
   @Prop({
     type: [
@@ -43,13 +53,13 @@ export class User {
 
   @Prop([
     {
-      contentId: { type: String, required: true },
-      contentType: { type: String, enum: ['Movie', 'TVShow'], required: true },
+      contentId: { type: Types.ObjectId, required: true },
+      contentType: { type: String, enum: CONTENT_TYPE_ENUM, required: true },
     },
   ])
-  myList: {
-    contentId: string;
-    contentType: string;
+  myListing: {
+    id: string;
+    type: ContentType;
   }[];
 }
 

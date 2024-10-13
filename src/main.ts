@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import 'reflect-metadata';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { GlobalExceptionHandler } from './middleware/GlobalException.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -30,6 +31,10 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
+  // This global Exceptional handler makes sure that
+  // every error thrown is caught and sent to the client with proper response
+  app.useGlobalFilters(new GlobalExceptionHandler());
   await app.listen(3000);
 }
 bootstrap();

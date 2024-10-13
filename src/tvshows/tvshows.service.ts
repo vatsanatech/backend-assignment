@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { TVShow, TVShowDocument } from '../models/tvshow.schema';
 import { CreateTVshowDto } from './dto/create-tvshow.dto';
+import { TVShowDoesNotExistException } from './exception/tvShow.exception';
 
 @Injectable()
 export class TVShowsService {
@@ -15,6 +16,14 @@ export class TVShowsService {
 
   async findAll(): Promise<TVShow[]> {
     return this.tvShowModel.find().exec();
+  }
+
+  async findOne(tvShowId: string): Promise<TVShow> {
+    const foundTVShow = await this.tvShowModel.findById(tvShowId);
+    if (!foundTVShow) {
+      throw new TVShowDoesNotExistException();
+    }
+    return foundTVShow;
   }
 
   async create(createTVShowDto: CreateTVshowDto): Promise<TVShow> {
