@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from 'src/models/user.schema';
 import { AddToListDto } from './dto/list-user.dto';
 
@@ -49,14 +49,27 @@ export class UserListService {
         _id: userId,
         'myListing.contentId': itemId,
       })
-      .select('myListing');
+      .select('username email');
   }
 
   // list items of the user
-  async listMyItems(userId: string) {
-    const userContent = await this.userModel
-      .findById(userId)
-      .select('myListing');
-    return userContent;
+  async listMyItems(userId: string, limit: number, page: number): Promise<any> {
+    const userContent = await this.userModel.aggregate([
+      { $match: { _id: new Types.ObjectId(userId) } },
+      {
+        $project: {
+          listCount: { $size: '$myListing' }, // Count total items in the array
+          currentPageList: {
+            $slice: ['$myListing', (page - 1) * limit, limit],
+          },
+        },
+      },
+    ]);
+    return userContent[0];
+  }
+
+  async listUser(userId: string): Promise<User | null> {
+    const user = await this.userModel.findById(userId).select('username email');
+    return user;
   }
 }

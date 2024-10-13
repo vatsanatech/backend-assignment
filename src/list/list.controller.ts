@@ -6,6 +6,7 @@ import {
   Body,
   HttpStatus,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserListService } from './list.service';
@@ -25,6 +26,7 @@ import {
   ContentDoesNotException,
   UserNotFoundException,
 } from './exceptions/list.exception';
+import { PaginationDto } from 'src/utils/pagination/pagination.dto';
 
 @ApiTags('User List')
 @Controller('list')
@@ -36,10 +38,30 @@ export class UserListController {
   ) {}
 
   @Get(':userId')
-  async findMyItems(@Param() params: ListUserItemDto) {
+  async findMyItems(
+    @Param() params: ListUserItemDto,
+    @Query() pagination: PaginationDto,
+  ) {
     const { userId } = params;
-    const foundContent = await this.userListService.listMyItems(userId);
-    return successResponse(HttpStatus.OK, 'Found Content', foundContent);
+    const { limit, page } = pagination;
+    const foundContent = await this.userListService.listMyItems(
+      userId,
+      limit,
+      page,
+    );
+    console.debug('🚀 ~ UserListController ~ foundContent:', foundContent);
+    const meta = {
+      totalItems: foundContent.listCount,
+      totalPage: foundContent.listCount / page,
+      currentPage: page,
+      itemsPerPage: limit,
+    };
+
+    const responseData = {
+      foundContent: foundContent.currentPageList,
+      meta,
+    };
+    return successResponse(HttpStatus.OK, 'Found Content', responseData);
   }
 
   @Post()
@@ -47,7 +69,7 @@ export class UserListController {
     const { contentId, contentType, userId } = payload;
 
     // check if user exists
-    const foundUser = await this.userListService.listMyItems(userId);
+    const foundUser = await this.userListService.listUser(userId);
 
     if (!foundUser) {
       throw new UserNotFoundException();
@@ -92,7 +114,7 @@ export class UserListController {
   async removeContentFromList(@Body() payload: RemoveFromListDto) {
     const { userId, contentId } = payload;
 
-    const foundUser = await this.userListService.listMyItems(userId);
+    const foundUser = await this.userListService.listUser(userId);
 
     // check if user exists
     if (!foundUser) {
