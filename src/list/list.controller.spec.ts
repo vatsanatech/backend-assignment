@@ -59,7 +59,6 @@ describe('UserController', () => {
       jest.spyOn(service, 'removeFromList').mockResolvedValue(undefined);
 
       const result = await controller.removeUser('someUserId');
-      console.log(JSON.stringify(result));
       expect(result).toEqual({
         statusCode: 200,
         message: 'User with ID someUserId has been successfully deleted.',
