@@ -49,7 +49,7 @@ export class UserListController {
     description: 'Item added to the list',
   })
   @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
+    status: HttpStatus.CONFLICT,
     description: 'Invalid input or item already exists',
   })
   async create(@Body() addToListDto: CreateListDto) {

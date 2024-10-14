@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -36,78 +35,83 @@ export class ListService {
     const validLimit =
       Number.isNaN(Number(limit)) || Number(limit) < 1 ? 10 : Number(limit);
 
-    const [result, totalCount] = await Promise.all([
-      this.userModel
-        .aggregate([
-          { $match: { _id: new Types.ObjectId(userId) } },
-          { $unwind: '$myList' },
-          { $skip: validOffset },
-          { $limit: validLimit },
-          {
-            $lookup: {
-              from: 'movies',
-              let: { contentId: '$myList.contentId' },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: [{ $toString: '$_id' }, '$$contentId'],
+    const [result] = await this.userModel
+      .aggregate([
+        { $match: { _id: new Types.ObjectId(userId) } },
+        { $unwind: '$myList' },
+        {
+          $facet: {
+            data: [
+              { $skip: validOffset },
+              { $limit: validLimit },
+              {
+                $lookup: {
+                  from: 'movies',
+                  let: { contentId: '$myList.contentId' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: [{ $toString: '$_id' }, '$$contentId'],
+                        },
+                      },
                     },
-                  },
-                },
-              ],
-              as: 'movieContent',
-            },
-          },
-          {
-            $lookup: {
-              from: 'tvshows',
-              let: { contentId: '$myList.contentId' },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: [{ $toString: '$_id' }, '$$contentId'],
-                    },
-                  },
-                },
-              ],
-              as: 'tvShowContent',
-            },
-          },
-          {
-            $addFields: {
-              content: {
-                $cond: {
-                  if: { $eq: ['$myList.contentType', 'Movie'] },
-                  then: { $arrayElemAt: ['$movieContent', 0] },
-                  else: { $arrayElemAt: ['$tvShowContent', 0] },
+                  ],
+                  as: 'movieContent',
                 },
               },
-            },
+              {
+                $lookup: {
+                  from: 'tvshows',
+                  let: { contentId: '$myList.contentId' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: [{ $toString: '$_id' }, '$$contentId'],
+                        },
+                      },
+                    },
+                  ],
+                  as: 'tvShowContent',
+                },
+              },
+              {
+                $addFields: {
+                  content: {
+                    $cond: {
+                      if: { $eq: ['$myList.contentType', 'Movie'] },
+                      then: { $arrayElemAt: ['$movieContent', 0] },
+                      else: { $arrayElemAt: ['$tvShowContent', 0] },
+                    },
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: '$myList._id',
+                  contentId: '$myList.contentId',
+                  contentType: '$myList.contentType',
+                  content: 1,
+                },
+              },
+            ],
+            totalCount: [{ $group: { _id: null, count: { $sum: 1 } } }],
           },
-          {
-            $project: {
-              _id: '$myList._id',
-              contentId: '$myList.contentId',
-              contentType: '$myList.contentType',
-              content: 1,
-            },
+        },
+        {
+          $project: {
+            items: '$data',
+            total: { $arrayElemAt: ['$totalCount.count', 0] },
           },
-        ])
-        .exec(),
-      this.userModel
-        .aggregate([
-          { $match: { _id: new Types.ObjectId(userId) } },
-          { $project: { count: { $size: '$myList' } } },
-        ])
-        .exec(),
-    ]);
+        },
+      ])
+      .exec();
 
-    const total = totalCount[0]?.count || 0;
+    const total = result.total || 0;
 
     return {
-      items: result,
+      items: result.items,
       total,
       offset: validOffset,
       limit: validLimit,
@@ -121,12 +125,6 @@ export class ListService {
 
     if (!user) {
       throw new NotFoundException('User not found');
-    }
-
-    if (contentType !== 'TVShow' && contentType !== 'Movie') {
-      throw new BadRequestException(
-        'Invalid content type. Must be either TVShow or Movie.',
-      );
     }
 
     let content;

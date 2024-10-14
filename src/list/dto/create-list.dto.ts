@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { CONTENT_TYPE_ENUM } from 'src/models/user.schema';
 
 export class CreateListDto {
   @ApiProperty({
@@ -10,10 +11,13 @@ export class CreateListDto {
   contentId: string;
 
   @ApiProperty({
-    description: 'The type of content (e.g., movie, tvshow)',
+    description: 'The type of content (e.g., Movie, TVShow)',
     example: 'Movie',
   })
-  @IsString()
+  @IsNotEmpty()
+  @IsEnum(CONTENT_TYPE_ENUM, {
+    message: 'Content Type should be either Movie or TV Show',
+  })
   contentType: string;
 
   @ApiProperty({

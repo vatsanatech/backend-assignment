@@ -3,6 +3,9 @@ import { Document } from 'mongoose';
 export type UserDocument = User & Document;
 import { genre } from '../constants/constants';
 
+export const CONTENT_TYPE_ENUM = ['Movie', 'TVShow'] as const;
+export type ContentType = (typeof CONTENT_TYPE_ENUM)[number];
+
 @Schema()
 export class User {
   @Prop({ required: true })
@@ -44,7 +47,7 @@ export class User {
   @Prop([
     {
       contentId: { type: String, required: true },
-      contentType: { type: String, enum: ['Movie', 'TVShow'], required: true },
+      contentType: { type: String, enum: CONTENT_TYPE_ENUM, required: true },
     },
   ])
   myList: {

@@ -15,7 +15,6 @@ export class MoviesController {
 
   @Post()
   async create(@Body() createMovieDto: CreateMovieDto) {
-    createMovieDto.releaseDate = new Date(createMovieDto.releaseDate);
     return this.moviesService.create(createMovieDto);
   }
 }
