@@ -17,10 +17,10 @@ export class SeedService implements OnModuleInit {
 
   async onModuleInit() {
     // await this.seedDatabase();
-    console.log(
-      'await this.userModel.find({});',
-      await this.movieModel.find({}),
-    );
+    // console.log(
+    //   'await this.userModel.find({});',
+    //   await this.movieModel.find({}),
+    // );
     console.log(
       'await this.userModel.find({});',
       await this.userModel.find({}),

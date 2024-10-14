@@ -2,33 +2,23 @@ import {
   Controller,
   Get,
   Post,
-  Delete,
   Body,
   Query,
-  Param,
-  Request,
   HttpCode,
   HttpStatus,
-  NotFoundException,
+  Delete,
   BadRequestException,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiQuery,
-  ApiParam,
-} from '@nestjs/swagger';
-import { UserListService } from './list.service';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { ListService } from './list.service';
 
 import { CreateListDto } from './dto/create-list.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @ApiTags('List')
 @Controller('list')
-@ApiBearerAuth()
-export class ListController {
-  constructor(private readonly userListService: UserListService) {}
+export class UserListController {
+  constructor(private readonly listService: ListService) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -37,27 +27,18 @@ export class ListController {
     status: HttpStatus.OK,
     description: "Returns the user's list",
   })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: "User's list not found",
-  })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'userId', required: true, type: String })
   @ApiQuery({ name: 'offset', required: false, type: Number })
   async find(
-    @Query('limit') limit: number = 10,
-    @Query('offset') offset: number = 0,
+    @Query() paginationDto: PaginationDto,
     @Query('userId') userId: string,
   ) {
-    try {
-      const list = await this.userListService.findAll(userId, limit, offset);
-      return list;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
-      }
-      throw error;
+    if (!userId) {
+      throw new BadRequestException('userId is required');
     }
+    const result = await this.listService.findAll(userId, paginationDto);
+    return { success: true, data: result };
   }
 
   @Post()
@@ -72,18 +53,11 @@ export class ListController {
     description: 'Invalid input or item already exists',
   })
   async create(@Body() addToListDto: CreateListDto) {
-    try {
-      const updatedList = await this.userListService.create(addToListDto);
-      return updatedList;
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
-      }
-      throw error;
-    }
+    const result = await this.listService.create(addToListDto);
+    return { success: true, data: result };
   }
 
-  @Delete(':itemId')
+  @Delete()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Remove item from user's list" })
   @ApiResponse({
@@ -91,22 +65,23 @@ export class ListController {
     description: 'Item removed from the list',
   })
   @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'List or item not found',
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid input',
   })
-  @ApiParam({ name: 'itemId', type: String })
-  async remove(@Param('itemId') itemId: string, @Request() req) {
-    try {
-      const updatedList = await this.userListService.remove(
-        req.user.userId,
-        itemId,
-      );
-      return updatedList;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new NotFoundException(error.message);
-      }
-      throw error;
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User or item not found',
+  })
+  @ApiQuery({ name: 'userId', required: true, type: String })
+  @ApiQuery({ name: 'contentId', required: true, type: String })
+  async remove(
+    @Query('userId') userId: string,
+    @Query('contentId') contentId: string,
+  ) {
+    if (!userId || !contentId) {
+      throw new BadRequestException('userId and contentId are required');
     }
+    const result = await this.listService.remove({ userId, contentId });
+    return { success: true, data: result };
   }
 }
