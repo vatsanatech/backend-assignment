@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../app.module';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Movie } from '../src/models/movie.schema'; // Make sure this path is correct
+import { Movie } from '../models/movie.schema'; // Make sure this path is correct
 
 describe('UserListController (e2e)', () => {
   let app: INestApplication;
