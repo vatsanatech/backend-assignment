@@ -16,15 +16,7 @@ export class SeedService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    // await this.seedDatabase();
-    // console.log(
-    //   'await this.userModel.find({});',
-    //   await this.movieModel.find({}),
-    // );
-    console.log(
-      'await this.userModel.find({});',
-      await this.userModel.find({}),
-    );
+    await this.seedDatabase();
   }
 
   async seedDatabase() {
@@ -38,7 +30,7 @@ export class SeedService implements OnModuleInit {
 
       // Create mock data
       try {
-        const users = await this.userModel.create([
+        await this.userModel.create([
           {
             username: 'user1',
             email: 'user1@example.com',
@@ -94,7 +86,6 @@ export class SeedService implements OnModuleInit {
             },
           },
         ]);
-        Logger.log('users', users);
       } catch (error) {
         console.log('error seeding user');
       }

@@ -10,8 +10,8 @@ import { Model, Types } from 'mongoose';
 import { User, UserDocument } from '../models/user.schema';
 import { PaginationDto } from './dto/pagination.dto';
 import { CreateListDto } from './dto/create-list.dto';
-import { TVShow } from 'src/models/tvshow.schema';
-import { Movie } from 'src/models/movie.schema';
+import { TVShow } from '../models/tvshow.schema';
+import { Movie } from '../models/movie.schema';
 
 @Injectable()
 export class ListService {
