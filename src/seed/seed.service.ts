@@ -6,7 +6,7 @@ import { TVShow } from '../models/tvshow.schema';
 import { Movie, MovieDocument } from '../models/movie.schema';
 
 @Injectable()
-export class SeedService implements OnModuleInit {
+export class SeedService {
   private readonly logger = new Logger(SeedService.name);
 
   constructor(
@@ -14,10 +14,6 @@ export class SeedService implements OnModuleInit {
     @InjectModel(TVShow.name) private tvShowModel: Model<TVShow>,
     @InjectModel(Movie.name) private movieModel: Model<Movie>,
   ) {}
-
-  async onModuleInit() {
-    await this.seedDatabase();
-  }
 
   async seedDatabase() {
     try {
