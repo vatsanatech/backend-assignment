@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../models/user.schema';
 import { TVShow } from '../models/tvshow.schema';
-import { Movie } from '../models/movie.schema';
+import { Movie, MovieDocument } from '../models/movie.schema';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
