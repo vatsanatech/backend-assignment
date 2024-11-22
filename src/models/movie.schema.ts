@@ -19,6 +19,7 @@ export class Movie {
         enum: genre,
       },
     ],
+    required: true
   })
   genres: string[];
 
@@ -28,7 +29,7 @@ export class Movie {
   @Prop({ required: true })
   director: string;
 
-  @Prop({ type: [String] })
+  @Prop({ type: [String], required: true })
   actors: string[];
 }
 

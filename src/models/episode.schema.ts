@@ -6,6 +6,9 @@ export type EpisodeDocument = Episode & Document;
 @Schema()
 export class Episode {
   @Prop({ required: true })
+  title: string;
+
+  @Prop({ required: true })
   episodeNumber: number;
 
   @Prop({ required: true })

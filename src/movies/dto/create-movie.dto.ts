@@ -34,6 +34,8 @@ export class CreateMovieDto {
   director: string;
 
   @ApiProperty({ type: [String] })
+  @IsNotEmpty()
   @IsArray()
+  @ArrayMinSize(1)
   actors: string[];
 }
