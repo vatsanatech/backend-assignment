@@ -14,3 +14,7 @@ export const genre = [
   'Biography',
   'History',
 ];
+
+export const MOVIE = 'Movie';
+
+export const TVSHOW = 'TVShow';
