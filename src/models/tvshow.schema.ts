@@ -28,3 +28,15 @@ export class TVShow {
 }
 
 export const TVShowSchema = SchemaFactory.createForClass(TVShow);
+
+TVShowSchema.index({ title: 1});
+TVShowSchema.index({ description: 1});
+TVShowSchema.index({ genres: 1});
+TVShowSchema.searchIndex({
+  name: 'Search index for TVShow collection',
+  definition: {
+    mappings: {
+      dynamic: true,
+    }
+  }
+});

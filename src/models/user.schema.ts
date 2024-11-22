@@ -5,7 +5,7 @@ import { genre, MOVIE, TVSHOW } from '../constants/constants';
 
 @Schema()
 export class User {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true  })
   username: string;
 
   @Prop({
@@ -54,3 +54,5 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.index({ username: 1 });
