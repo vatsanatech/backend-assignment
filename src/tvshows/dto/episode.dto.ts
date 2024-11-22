@@ -7,6 +7,7 @@ import {
   IsArray,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from "class-transformer";
 
 export class EpisodeDto {
   @ApiProperty({ type: Number })
@@ -27,6 +28,7 @@ export class EpisodeDto {
   @ApiProperty({ type: Date })
   @IsNotEmpty()
   @IsDate()
+  @Transform(({ value }) => new Date(value))
   releaseDate: Date;
 
   @ApiProperty({ type: String })
