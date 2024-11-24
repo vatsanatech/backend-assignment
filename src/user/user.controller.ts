@@ -18,6 +18,7 @@ import { UserService } from "./user.service";
 import { User } from "../models/user.schema";
 import { UserListDto } from "./dto/user.dto";
 import { HttpStatusCode } from "axios";
+import { PaginationQueryParamsDto } from "../dto/request.dto";
 
 @ApiTags('User')
 @Controller('user')
@@ -39,9 +40,8 @@ export class UserController {
 
     @ApiResponse({ status: 200, description: 'Fetched records successfully.' })
     @Get('list/:id')
-    @UsePipes(new ValidationPipe({ transform: true }))
-    async findList(@Param('id') id: string, @Query('limit', ParseIntPipe) limit: number, @Query('skip', ParseIntPipe) skip: number) {
-        return this.userService.listMyItems(id, limit, skip);
+    async findList(@Param('id') id: string, @Query() query: PaginationQueryParamsDto) {
+        return this.userService.listMyItems(id, query.limit, query.skip);
     }
 
     @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
