@@ -5,6 +5,7 @@ import { MoviesModule } from './movies/movies.module';
 import { TvshowsModule } from './tvshows/tvshows.module';
 import { SeedModule } from "./seed/seed.module";
 import configuration from "./config/configuration";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import configuration from "./config/configuration";
     }),
     MoviesModule,
     TvshowsModule,
-    SeedModule
+    SeedModule,
+    UserModule
   ],
 })
 export class AppModule { }
