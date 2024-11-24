@@ -10,13 +10,13 @@ import {
     Query,
     NotFoundException,
     HttpException,
-    HttpStatus
+    HttpStatus,
+    ParseIntPipe,
 } from '@nestjs/common';
 import { ApiFoundResponse, ApiNotFoundResponse, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from "./user.service";
-import { PaginationQueryParamsDto } from "../dto/request.dto";
 import { User } from "../models/user.schema";
-import { UserListDto, UserListQueryParamsDto } from "./dto/user.dto";
+import { UserListDto } from "./dto/user.dto";
 import { HttpStatusCode } from "axios";
 
 @ApiTags('User')
@@ -28,19 +28,20 @@ export class UserController {
     @ApiResponse({ status: 404, description: 'No record found with given id' })
     @Get('/details/:id')
     async find(@Param() params: any): Promise<User> {
-      const user = await this.userService.listUser(params.id);
+        const user = await this.userService.listUser(params.id);
 
-      if(!user) {
-        throw new HttpException('No record found with given id', HttpStatusCode.NotFound);
-      }
+        if (!user) {
+            throw new HttpException('No record found with given id', HttpStatusCode.NotFound);
+        }
 
-      return user;
+        return user;
     }
 
     @ApiResponse({ status: 200, description: 'Fetched records successfully.' })
-    @Get('list')
-    async findList(@Query() query: UserListQueryParamsDto) {
-        return this.userService.listMyItems(query.userId, query.limit, query.skip);
+    @Get('list/:id')
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async findList(@Param('id') id: string, @Query('limit', ParseIntPipe) limit: number, @Query('skip', ParseIntPipe) skip: number) {
+        return this.userService.listMyItems(id, limit, skip);
     }
 
     @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
@@ -49,7 +50,7 @@ export class UserController {
     async addToList(@Body() userListDto: UserListDto) {
         const list = await this.userService.addToList(userListDto);
 
-        if(list === null) {
+        if (list === null) {
             throw new HttpException('Failed to create record. User with given id does not exists', HttpStatusCode.NotFound);
         }
 

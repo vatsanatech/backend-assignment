@@ -5,10 +5,10 @@ export class PaginationQueryParamsDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  limit: number = 10;
+  limit: number;
 
+  @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  @ApiProperty()
-  skip: number = 0;
+  skip: number;
 }
