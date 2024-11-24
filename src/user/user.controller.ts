@@ -48,13 +48,21 @@ export class UserController {
     @Post('list')
     @UsePipes(new ValidationPipe({ transform: true }))
     async addToList(@Body() userListDto: UserListDto) {
-        const list = await this.userService.addToList(userListDto);
+        try {
+            const list = await this.userService.addToList(userListDto);
 
-        if (list === null) {
-            throw new HttpException('Failed to create record. User with given id does not exists', HttpStatusCode.NotFound);
+            if (list === null) {
+                throw new HttpException('Failed to create record. User with given id does not exists', HttpStatusCode.NotFound);
+            }
+
+            return list;
+        } catch (error) {
+            if (error.keyValue && error.keyValue.contentId) {
+                throw new HttpException('Content with give ID already exists', HttpStatusCode.BadRequest);
+            }
+
+            throw new Error(error);
         }
-
-        return list;
     }
 
     @ApiResponse({ status: 200, description: 'The record has been successfully deleted.' })

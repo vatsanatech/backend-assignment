@@ -1,13 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 import mongoose, { ObjectId } from "mongoose";
 import { PaginationQueryParamsDto } from "../../dto/request.dto";
+import { contentTypes } from "../../constants/constants";
 
 export class UserListDto {
     @ApiProperty()
     @IsNotEmpty()
-    @Transform(({value}) => new mongoose.Types.ObjectId(value))
+    @Transform(({ value }) => new mongoose.Types.ObjectId(value))
     userId: ObjectId;
 
     @ApiProperty()
@@ -18,6 +19,7 @@ export class UserListDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
+    @IsEnum(contentTypes, { message: `Allowed values for contentType: ${contentTypes.join(', ')}` })
     contentType: string;
 }
 
