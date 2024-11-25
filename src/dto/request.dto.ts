@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from "class-transformer";
 import { IsNotEmpty, IsNumber, Max, Min } from "class-validator";
 
 export class PaginationQueryParamsDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
@@ -11,7 +11,7 @@ export class PaginationQueryParamsDto {
   @Transform(({value}) => parseInt(value) || 10)
   limit: number = 10;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
