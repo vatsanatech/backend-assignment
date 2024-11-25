@@ -1,17 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../app.module';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Movie } from '../models/movie.schema'; // Make sure this path is correct
+import { User } from "../../../src/models/user.schema";
+import { Movie } from "../../../src/models/movie.schema";
+import { AppModule } from "../../../src/app.module";
 
 describe('UserController (e2e)', () => {
     let app: INestApplication;
     let newListItemId = '';
     let userId = '';
     let movieId = '';
-    let userModel: Model<any>;
+    let userModel: Model<User>;
     let movieModel: Model<Movie>;
 
     beforeAll(async () => {
@@ -26,7 +27,7 @@ describe('UserController (e2e)', () => {
         );
         await app.init();
 
-        userModel = moduleFixture.get<Model<any>>(getModelToken('User'));
+        userModel = moduleFixture.get<Model<User>>(getModelToken('User'));
         movieModel = moduleFixture.get<Model<Movie>>(getModelToken('Movie'));
 
         // Find or create a test user
@@ -95,7 +96,7 @@ describe('UserController (e2e)', () => {
             .post('/user/list')
             .send(body)
             .expect(201)
-            .expect('Content-Type', /json/);
+            .expect('Content-Type', 'application/json');
 
         expect(response.body).toContain('_id')
         expect(response.body.userId).toEqual(userId);
@@ -126,7 +127,7 @@ describe('UserController (e2e)', () => {
         const response = await request(app.getHttpServer())
             .get(`/user/list?userId=${userId}&limit=5&offset=0`)
             .expect(200)
-            .expect('Content-Type', /json/);
+            .expect('Content-Type', 'application/json');
 
         expect(response.body).toEqual(
             expect.objectContaining({
@@ -151,7 +152,7 @@ describe('UserController (e2e)', () => {
         const response = await request(app.getHttpServer())
             .delete(`/user/list/${userId}?contentId=${movieId}`)
             .expect(200)
-            .expect('Content-Type', /json/);
+            .expect('Content-Type', 'application/json');
 
         expect(response.body.statusCode).toBe(200);
     });
