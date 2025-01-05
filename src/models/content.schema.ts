@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { genre } from '../constants/constants';
+import { CONTENT_TYPE, genre } from '../constants/constants';
+import { Episode, EpisodeSchema } from './episode.schema';
 
-export type MovieDocument = Movie & Document;
+export type ContentDocument = Content & Document;
 
 @Schema()
-export class Movie {
+export class Content {
   @Prop({ required: true })
   title: string;
 
@@ -30,6 +31,14 @@ export class Movie {
 
   @Prop({ type: [String] })
   actors: string[];
+
+  @Prop({ type: [EpisodeSchema] })
+  episodes?: Episode[];
+
+  @Prop({
+    contentType: { type: String, enum: CONTENT_TYPE, required: true },
+  })
+  contentType: CONTENT_TYPE;
 }
 
-export const MovieSchema = SchemaFactory.createForClass(Movie);
+export const ContentSchema = SchemaFactory.createForClass(Content);

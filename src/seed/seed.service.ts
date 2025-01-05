@@ -2,8 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../models/user.schema';
-import { TVShow } from '../models/tvshow.schema';
-import { Movie } from '../models/movie.schema';
+import { Content } from '../models/content.schema';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -11,12 +10,11 @@ export class SeedService implements OnModuleInit {
 
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
-    @InjectModel(TVShow.name) private tvShowModel: Model<TVShow>,
-    @InjectModel(Movie.name) private movieModel: Model<Movie>,
+    @InjectModel(Content.name) private contentModel: Model<Content>,
   ) {}
 
   async onModuleInit() {
-    await this.seedDatabase();
+    // await this.seedDatabase();
   }
 
   async seedDatabase() {
@@ -25,8 +23,7 @@ export class SeedService implements OnModuleInit {
 
       // Clear existing data (optional)
       await this.userModel.deleteMany({});
-      await this.tvShowModel.deleteMany({});
-      await this.movieModel.deleteMany({});
+      await this.contentModel.deleteMany({});
 
       // Create mock data
       try {
@@ -91,9 +88,12 @@ export class SeedService implements OnModuleInit {
       }
 
       try {
-        await this.tvShowModel.create([
+        await this.contentModel.create([
           {
             title: 'Breaking Bad',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'A high school chemistry teacher turned methamphetamine producer partners with a former student to create a lucrative meth lab.',
             genres: ['Crime', 'Drama', 'Thriller'],
@@ -118,6 +118,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'Game of Thrones',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'Nine noble families fight for control over the lands of Westeros, while an ancient enemy returns after being dormant for millennia.',
             genres: ['Action', 'Adventure', 'Drama'],
@@ -142,6 +145,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'Stranger Things',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'When a young boy disappears, his mother, a police chief, and his friends must confront terrifying supernatural forces in order to get him back.',
             genres: ['Drama', 'Fantasy', 'Horror'],
@@ -166,6 +172,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Office',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'A mockumentary on a group of typical office workers, where the workday consists of ego clashes, inappropriate behavior, and tedium.',
             genres: ['Comedy'],
@@ -190,6 +199,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'Friends',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'Follows the personal and professional lives of six twenty to thirty-something-year-old friends living in Manhattan.',
             genres: ['Comedy', 'Romance'],
@@ -214,6 +226,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Mandalorian',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'The travels of a lone bounty hunter in the outer reaches of the galaxy, far from the authority of the New Republic.',
             genres: ['Action', 'Adventure', 'Fantasy'],
@@ -238,6 +253,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Simpsons',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'The satiric adventures of a working-class family in the misfit city of Springfield.',
             genres: ['Animation', 'Comedy'],
@@ -262,6 +280,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'Sherlock',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'A modern update finds the famous sleuth and his doctor partner solving crime in 21st century London.',
             genres: ['Crime', 'Drama', 'Mystery'],
@@ -286,6 +307,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Crown',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               "Follows the political rivalries and romance of Queen Elizabeth II's reign and the events that shaped the second half of the twentieth century.",
             genres: ['Biography', 'Drama', 'History'],
@@ -310,6 +334,9 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Big Bang Theory',
+            contentType: "TVShow",
+            director: "Nolan",
+            releaseDate: '2001-12-19T00:00:00Z',
             description:
               'A woman who moves into an apartment across the hall from two brilliant but socially awkward physicists shows them how little they know about life outside of the lab.',
             genres: ['Comedy', 'Romance'],
@@ -334,13 +361,14 @@ export class SeedService implements OnModuleInit {
           },
         ]);
       } catch (error) {
-        console.error('Error in seeding tv shows');
+        console.error('Error in seeding tv shows 1',error);
       }
 
       try {
-        await this.movieModel.create([
+        await this.contentModel.create([
           {
             title: 'Inception',
+            contentType: "Movie",
             description:
               'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.',
             genres: ['Action', 'SciFi'],
@@ -354,6 +382,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Godfather',
+            contentType: "Movie",
             description:
               'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.',
             genres: ['Drama', 'Crime'],
@@ -363,6 +392,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Dark Knight',
+            contentType: "Movie",
             description:
               'When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.',
             genres: ['Action', 'Drama'],
@@ -372,6 +402,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'Pulp Fiction',
+            contentType: "Movie",
             description:
               'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.',
             genres: ['Drama', 'Crime'],
@@ -381,6 +412,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Shawshank Redemption',
+            contentType: "Movie",
             description:
               'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',
             genres: ['Drama'],
@@ -390,6 +422,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'Forrest Gump',
+            contentType: "Movie",
             description:
               'The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal, and other historical events unfold from the perspective of an Alabama man with an IQ of 75.',
             genres: ['Drama', 'Romance'],
@@ -399,6 +432,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Matrix',
+            contentType: "Movie",
             description:
               'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
             genres: ['Action', 'SciFi'],
@@ -408,6 +442,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'Fight Club',
+            contentType: "Movie",
             description:
               'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.',
             genres: ['Drama'],
@@ -417,6 +452,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Lord of the Rings: The Fellowship of the Ring',
+            contentType: "Movie",
             description:
               'A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.',
             genres: ['Action', 'Adventure', 'Drama'],
@@ -426,6 +462,7 @@ export class SeedService implements OnModuleInit {
           },
           {
             title: 'The Lion King',
+            contentType: "Movie",
             description:
               'Lion prince Simba and his father are targeted by his bitter uncle, who wants to ascend the throne himself.',
             genres: ['Animation', 'Adventure', 'Drama'],
@@ -435,10 +472,10 @@ export class SeedService implements OnModuleInit {
           },
         ]);
       } catch (error) {
-        console.error('error seeding movies', error);
+        console.error('error seeding contents', error);
       }
 
-      this.logger.log('Database seeded successfully');
+      this.logger.log('Database seeded successfully 2');
     } catch (error) {
       this.logger.error('Error seeding database:', error);
     }
