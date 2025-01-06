@@ -6,7 +6,7 @@ import { Content, ContentSchema } from '../models/content.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Content.name, schema: ContentSchema }]), 
+    MongooseModule.forFeature([{ name: Content.name, schema: ContentSchema }]),
   ],
   controllers: [MoviesController],
   providers: [MoviesService],

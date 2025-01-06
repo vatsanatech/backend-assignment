@@ -17,5 +17,5 @@ export const genre = [
 
 export enum CONTENT_TYPE {
   MOVIE = 'Movie',
-  TVSHOW = 'TVShow'
+  TVSHOW = 'TVShow',
 }

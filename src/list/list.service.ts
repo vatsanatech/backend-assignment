@@ -1,47 +1,42 @@
-import { BadRequestException, Injectable,Inject } from '@nestjs/common';
-import { InjectModel, } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { BadRequestException, Injectable, Inject } from '@nestjs/common';
 import { PaginationDto } from './dto/pagination.dto';
-import { WatchList, WatchListDocument } from 'src/models/watchList.schema';
 import {
   CreateUserListItemDto,
   RemoveUserListItemDto,
-} from './dto/user-list.dto';
-
-import {ListRepository } from './list.repository';
-
+  UserMyList,
+} from './dto/list.dto';
+import { ListRepository } from './list.repository';
 
 @Injectable()
 export class UserListService {
   constructor(
-    @InjectModel(WatchList.name)
-    private readonly watchListModel: Model<WatchListDocument>,
-
     @Inject(ListRepository)
     private readonly listRepository: ListRepository,
   ) {}
 
-  async addToUserList(itemDetails: CreateUserListItemDto) {
-    const { contentId, contentType, userId } = itemDetails;
-
-    let existingItem = await this.watchListModel.findOne({
-      userId,
-      contentId,
-      contentType,
-    });
+  async addToUserList(itemDetails: CreateUserListItemDto): Promise<string> {
+    const { content, userId } = itemDetails;
+    const existingItem = await this.listRepository.checkMyList(userId, content);
     if (existingItem) {
       throw new BadRequestException('This item is already in your watch list.');
     }
-    const watchItem = new this.watchListModel(itemDetails);
-    await watchItem.save();
-    return 'Added to Watch list.';
+    await this.listRepository.createMyList(itemDetails);
+    return `Added to watchlist successfully`;
   }
 
-  async fetchUserList(id: string, pagination: PaginationDto) {
-    return await this.listRepository.getWatchList(id, pagination);
+  fetchUserList(id: string, pagination: PaginationDto): Promise<UserMyList[]> {
+    return this.listRepository.getMyList(id, pagination);
   }
 
-  removeFromUserList(payload: RemoveUserListItemDto) {
-    return this.watchListModel.deleteOne(payload);
+  async removeFromUserList(payload: RemoveUserListItemDto): Promise<string> {
+    const { userId, content } = payload;
+    const deletedCount = await this.listRepository.deleteMyList(
+      userId,
+      content,
+    );
+    if (deletedCount === 0) {
+      throw new BadRequestException('Item not found in your watch list.');
+    }
+    return `Removed from watchlist successfully  ${content}`;
   }
 }

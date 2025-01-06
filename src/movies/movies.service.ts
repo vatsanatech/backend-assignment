@@ -7,7 +7,8 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 @Injectable()
 export class MoviesService {
   constructor(
-    @InjectModel(Content.name) private readonly movieModel: Model<ContentDocument>,
+    @InjectModel(Content.name)
+    private readonly movieModel: Model<ContentDocument>,
   ) {}
 
   async findAll(): Promise<Content[]> {

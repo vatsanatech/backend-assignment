@@ -1,22 +1,16 @@
 import {
   Controller,
   Get,
-  Param,
   Post,
   Query,
   BadRequestException,
   Body,
   Delete,
 } from '@nestjs/common';
-import { MoviesService } from 'src/movies/movies.service';
-import { TVShowsService } from 'src/tvshows/tvshows.service';
 import { UserListService } from './list.service';
 import { ApiTags } from '@nestjs/swagger';
 
-import {
-  CreateUserListItemDto,
-  RemoveUserListItemDto,
-} from './dto/user-list.dto';
+import { CreateUserListItemDto, RemoveUserListItemDto } from './dto/list.dto';
 import { PaginationDto } from './dto/pagination.dto';
 
 @ApiTags('User List')
