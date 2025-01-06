@@ -14,3 +14,8 @@ export const genre = [
   'Biography',
   'History',
 ];
+
+export enum CONTENT_TYPE {
+  MOVIE = 'Movie',
+  TVSHOW = 'TVShow',
+}

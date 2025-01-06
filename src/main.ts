@@ -19,7 +19,7 @@ async function bootstrap() {
       'Have all the routes documentation for user, movies and tvshows',
     )
     .setVersion('1.0')
-    .addServer('http://127.0.0.1:3000', 'Default Server')
+    .addServer('http://localhost:5000', 'Default Server')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
@@ -30,6 +30,6 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(3000);
+  await app.listen(5000);
 }
 bootstrap();
